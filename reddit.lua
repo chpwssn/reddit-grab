@@ -56,7 +56,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         table.insert(urls, { url=string.match(url, "(https?:[^#]+)#") })
         addedtolist[url] = true
         addedtolist[string.match(url, "(https?:[^#]+)#")] = true
-      elseif string.match(url, "related/"..item_value) then
+      elseif not string.match(url, "related/"..item_value.."[0-9a-zA-Z]%/[-_/0-9a-zA-Z]*/?$") and string.match(url, "related/"..item_value.."[0-9a-zA-Z]%/[-_/0-9a-zA-Z]*/") then
         --Ignore anything past the first related page, do nothing I think
         io.stdout:write("\nignoring related "..url.."\n")
       elseif string.match(url, "m%.reddit%.com/login/") then

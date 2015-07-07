@@ -27,7 +27,7 @@ wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_pars
   if downloaded[url] == true or addedtolist[url] == true then
     return false
   end
-  
+
   if (downloaded[url] ~= true or addedtolist[url] ~= true) then
     if (string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z]") and not string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z][0-9a-z]")) or html == 0 then
       return true
@@ -47,7 +47,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   end
  
   local function check(url)
-    if (downloaded[url] ~= true and addedtolist[url] ~= true) and (string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z]") or string.match(url, "redditmedia%.com")) and not string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z][0-9a-z]") then
+    if (downloaded[url] ~= true and addedtolist[url] ~= true) and (string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z]") or string.match(url, "redditmedia%.com")) and not string.match(url, "[^a-z0-9]"..item_value.."[0-9a-z][0-9a-z]") and not string.match(url, "pixel%.redditmedia%.com") and not string.match(url, "stats%.redditmedia%.com") then
       if string.match(url, "&amp;") then
         table.insert(urls, { url=string.gsub(url, "&amp;", "&") })
         addedtolist[url] = true
@@ -56,6 +56,14 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         table.insert(urls, { url=string.match(url, "(https?:[^#]+)#") })
         addedtolist[url] = true
         addedtolist[string.match(url, "(https?:[^#]+)#")] = true
+      elseif string.match(url, "related/"..item_value) then
+        --Ignore anything past the first related page, do nothing I think
+        io.stdout:write("\nignoring related "..url.."\n")
+      elseif string.match(url, "m%.reddit%.com/login/") then
+        --Ignore the mobile login page, do nothing I think
+      elseif string.match(url, "i%.redditmedia%.com/") then
+        --Ignore the i.redditmedia.com, serves images for mobile and doesn't work, do nothing I think
+        io.stdout:write("\nignoring i.redditmedia.com url "..url.."\n")
       else
         table.insert(urls, { url=url })
         addedtolist[url] = true
